@@ -3,8 +3,10 @@ using System.Collections;
 
 public class Spawner : MonoBehaviour
 {
+    public static Spawner instance;
+
     // amount of times object will be spawned
-    [Range(1, 100)]
+    [Range(1, 1000)]
     public int spawnCount;
 
     // object that will be spawned
@@ -15,6 +17,8 @@ public class Spawner : MonoBehaviour
 
     void Awake()
     {
+        instance = this;
+
         for (int i = 0; i < spawnCount; i++)
         {
             // spawn units and give them random direction
@@ -25,7 +29,7 @@ public class Spawner : MonoBehaviour
                     Random.Range(spawnArea.xMin, spawnArea.xMax),
                     0f,
                     Random.Range(spawnArea.yMin, spawnArea.yMax)),
-                Quaternion.Euler(0f, Random.Range(0f, 360f), 0f)) as GameObject;
+                Quaternion.identity) as GameObject;
 
             newObject.transform.parent = transform;
         }

@@ -20,7 +20,7 @@ public class Separation : Capability
 
         // calculate the average run-away vector
         Vector3 normalizedMovement = Vector3.zero;
-        for (int i = 0; i < hits.Length; i++)
+        for (int i = 0; i < hits.Count; i++)
         {
             Vector3 distance = hits[i].transform.position - currentTransform.position;
 

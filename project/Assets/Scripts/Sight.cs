@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Sight : MonoBehaviour
 {
@@ -7,7 +8,7 @@ public class Sight : MonoBehaviour
     public float radius;
 
     [HideInInspector]
-    public Collider[] hits;
+    public List<Collider> hits;
 
     private Transform currentTransform;
 
@@ -18,6 +19,9 @@ public class Sight : MonoBehaviour
     
     public void Process()
     {
-        hits = Physics.OverlapSphere(currentTransform.position, radius);
+        hits = new List<Collider>(Physics.OverlapSphere(currentTransform.position, radius));
+
+        // remmove self from list
+        hits.Remove(collider);
     }
 }
