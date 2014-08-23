@@ -3,6 +3,17 @@ using System.Collections;
 
 public class Alignment : Capability
 {
+    [Range(0, 5)]
+    public float radius;
+
+    private float radius2;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        radius2 = radius * radius;
+    }
+
     public override Vector3 GetDelta()
     {
         base.GetDelta();
@@ -11,6 +22,10 @@ public class Alignment : Capability
 
         for (int i = 0; i < hits.Count; i++)
         {
+            Vector3 distance = hits[i].transform.position - currentTransform.position;
+
+            if (distance.sqrMagnitude < radius2)
+
             collectiveVelocity += hits[i].GetComponent<Velocity>().CurrentVelocity;
         }
 

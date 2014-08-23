@@ -15,6 +15,8 @@ public class Spawner : MonoBehaviour
     // location of spawning pool
     public Rect spawnArea;
 
+    public Color[] agentColors;
+
     void Awake()
     {
         instance = this;
