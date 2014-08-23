@@ -17,6 +17,8 @@ public class Spawner : MonoBehaviour
     {
         for (int i = 0; i < spawnCount; i++)
         {
+            // spawn units and give them random direction
+
             GameObject newObject = GameObject.Instantiate(
                 sourceObject,
                 new Vector3(

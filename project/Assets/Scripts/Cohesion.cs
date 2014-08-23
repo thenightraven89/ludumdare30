@@ -1,21 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Cohesion : MonoBehaviour
+public class Cohesion : Capability
 {
-    [Range(0, 2)]
-    public float radius;
-
-    private Transform currentTransform;
-
-    void Awake()
+    public override Vector3 GetDelta()
     {
-        currentTransform = transform;
-    }
-
-    void FixedUpdate()
-    {
-        Collider[] hits = Physics.OverlapSphere(currentTransform.position, radius);
+        base.GetDelta();
 
         // calculate the mass center of the visible objects
         Vector3 massCenter = Vector3.zero;
@@ -26,15 +16,8 @@ public class Cohesion : MonoBehaviour
         massCenter /= hits.Length;
 
         // move towards that mass center
-        Vector3 normalizedMovement = Vector3.Normalize(currentTransform.position - massCenter);
+        Vector3 normalizedMovement = Vector3.Normalize(massCenter - currentTransform.position);
 
-        currentTransform.Translate(normalizedMovement);
-
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, radius);
+        return normalizedMovement;
     }
 }
