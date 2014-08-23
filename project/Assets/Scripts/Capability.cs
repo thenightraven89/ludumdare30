@@ -8,7 +8,7 @@ public class Capability : MonoBehaviour
     protected Sight sight;
     protected List<Collider> hits;
 
-    [Range(0f, 5f)]
+    [Range(0f, 10f)]
     public float magnitude;
 
     protected virtual void Awake()

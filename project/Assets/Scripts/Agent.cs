@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Agent : MonoBehaviour
 {
+    public ParticleSystem particles;
+
     private AgentType agentType;
 
     private Color mainColor;
@@ -10,20 +12,20 @@ public class Agent : MonoBehaviour
     void Awake()
     {
         StartCoroutine(SwitchColorsRandomly());
+        SwitchType(0);
     }
 
     private IEnumerator SwitchColorsRandomly()
     {
         while (true)
         {
-            SwitchType(Random.Range(0, 4));    
-
             yield return new WaitForSeconds(4f);
+            SwitchType(Random.Range(0, 4));
         }
     }
 
     public void SwitchType(int index)
-    {
+    {        
         agentType = (AgentType)index;
         mainColor = renderer.material.GetColor("_Color");
 
@@ -32,13 +34,14 @@ public class Agent : MonoBehaviour
 
     private IEnumerator SwitchColor(int colorIndex)
     {
-        LeanTween.value(gameObject, TweenMaterialColor, mainColor, Spawner.instance.agentColors[colorIndex], 0.5f);
+        LeanTween.value(gameObject, TweenMaterialColor, mainColor, Spawner.instance.agentColors[colorIndex], 1f);
         yield return null;
     }
 
     public void TweenMaterialColor(Color value)
     {
         renderer.material.SetColor("_Color", value);
+        particles.renderer.material.SetColor("_TintColor", value);
     }
 
     public enum AgentType

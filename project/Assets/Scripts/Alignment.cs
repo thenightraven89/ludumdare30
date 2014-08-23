@@ -25,8 +25,13 @@ public class Alignment : Capability
             Vector3 distance = hits[i].transform.position - currentTransform.position;
 
             if (distance.sqrMagnitude < radius2)
-
-            collectiveVelocity += hits[i].GetComponent<Velocity>().CurrentVelocity;
+            {
+                Velocity otherVelocity = hits[i].GetComponent<Velocity>();
+                if (otherVelocity != null)
+                {
+                    collectiveVelocity += otherVelocity.CurrentVelocity;
+                }
+            }
         }
 
         if (hits.Count > 0)

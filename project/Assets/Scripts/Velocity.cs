@@ -55,6 +55,15 @@ public class Velocity : Capability
             //velocity = new Vector3(velocity.x, velocity.y, -1f * velocity.z);
         }
 
+        if (velocity.x * velocity.x > velocity.z * velocity.z)
+        {
+            velocity = new Vector3(velocity.x, 0f, 0f);
+        }
+        else
+        {
+            velocity = new Vector3(0f, 0f, velocity.z);
+        }
+
         currentTransform.Translate(velocity * magnitude * Time.fixedDeltaTime);
     }
 
