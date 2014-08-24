@@ -48,10 +48,13 @@ public class Hacking : MonoBehaviour
             if (agent != null && agent.agentType == Agent.AgentType.Citizen)
             {
                 hackableAgents.Add(agent);
-                agent.DefendHack(hackSkill);
+                agent.DefendHack(this);
             }
         }
     }
+
+    private int hackedMemory = 0;
+    public string title;
 
     void Update()
     {
@@ -94,4 +97,21 @@ public class Hacking : MonoBehaviour
         ringColorTweener.Tween(new Color(currentColor.r, currentColor.g, currentColor.b, 0f), 0.5f, LeanTweenType.easeInSine);
     }
 
+    internal void AddMemory(int memory)
+    {
+        hackedMemory += memory;
+        ElasticCamera.instance.AddMemory(memory);
+
+        StageManager.instance.AnnounceMemory(this);
+    }
+
+    internal int GetHackedMemory()
+    {
+        return hackedMemory;
+    }
+
+    internal void ResetMemory()
+    {
+        hackedMemory = 0;
+    }
 }

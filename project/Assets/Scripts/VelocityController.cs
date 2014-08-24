@@ -6,7 +6,7 @@ public class VelocityController : Capability
     private Vector3 velocity;
 
     public Hacking hacking;
-    private const float VELOCITY_CANCELHACK = 1f;
+    private const float VELOCITY_CANCELHACK = 0.5f;
 
     protected override void Awake()
     {
@@ -28,8 +28,6 @@ public class VelocityController : Capability
         {
             currentTransform.Translate(Vector3.forward * verticalVelocity * magnitude * Time.deltaTime);
         }
-
-        Debug.Log(Mathf.Abs(horizontalVelocity) + Mathf.Abs(verticalVelocity));
 
         if (Mathf.Abs(horizontalVelocity) + Mathf.Abs(verticalVelocity) > VELOCITY_CANCELHACK)
         {

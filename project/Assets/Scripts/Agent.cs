@@ -17,8 +17,7 @@ public class Agent : MonoBehaviour
     // when hacked, throw a die of values 1-to-complexity
     private int complexity;
 
-    // the memory level of the agent - how lengthy it is to download its content
-    // when downloading, wait this many seconds
+    // the memory reward
     private int memory;
 
     public Velocity velocity;
@@ -47,6 +46,8 @@ public class Agent : MonoBehaviour
             SwitchType(0);
             complexity = Dice.Roll(10);
         }
+
+        memory = Dice.Roll(32, 32, 32, 32);
     }
 
     private IEnumerator SwitchColorsRandomly()
@@ -112,6 +113,7 @@ public class Agent : MonoBehaviour
             fizzTweener.Tween(invisibleColor, 0.5f, LeanTweenType.linear);
         }
 
+        Util.TweenText(messageText.gameObject);
         beingHacked = false;
     }
 
@@ -123,16 +125,26 @@ public class Agent : MonoBehaviour
             messageText.text = "hacking_ [100%]";
             messageTweener.Tween(invisibleColor, 3f, LeanTweenType.easeInExpo, succeedHackColor);
             fizzTweener.Tween(invisibleColor, 0.5f, LeanTweenType.linear);
+            currentHacker.AddMemory(memory);
         }
 
+        Util.TweenText(messageText.gameObject);
         beingHacked = false;
     }
 
-    public void DefendHack(int hackSkill)
+    Hacking currentHacker = null;
+
+    public void DefendHack(Hacking hacker)
     {
-        beingHacked = true;
-        hackerSkill = hackSkill;
-        StartCoroutine("ExposeToHack");
+        if (!beingHacked)
+        {
+            beingHacked = true;
+            currentHacker = hacker;
+            hackerSkill = hacker.hackSkill;
+            StartCoroutine("ExposeToHack");
+
+            Util.TweenText(messageText.gameObject);
+        }
     }
 
     private bool beingHacked = false;
