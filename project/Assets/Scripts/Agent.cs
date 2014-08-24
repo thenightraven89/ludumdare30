@@ -3,16 +3,50 @@ using System.Collections;
 
 public class Agent : MonoBehaviour
 {
+    // assigned particle system
     public ParticleSystem particles;
 
-    private AgentType agentType;
+    // the agent's type
+    [HideInInspector]
+    public AgentType agentType;
 
+    // the agent's color
     private Color mainColor;
+
+    // the complexity level of the agent - how difficult it is to hack it
+    // when hacked, throw a die of values 1-to-complexity
+    private int complexity;
+
+    // the memory level of the agent - how lengthy it is to download its content
+    // when downloading, wait this many seconds
+    private int memory;
+
+    public Velocity velocity;
+
+    public TweenMaterialColor colorTweener;
+    public TweenMaterialColor messageTweener;
+    public TweenMaterialColor fizzTweener;
+    public TextMesh messageText;
+    private const float TIME_HACK = 2f;
 
     void Awake()
     {
-        StartCoroutine(SwitchColorsRandomly());
-        SwitchType(0);
+        messageText.text = "";
+        messageTweener.Set(invisibleColor);
+        fizzTweener.Set(invisibleColor);
+
+        float securityTypeChance = Random.Range(0f, 1f);
+
+        if (securityTypeChance < Spawner.instance.securityTypeChanceMax)
+        {
+            SwitchType(1);
+            complexity = int.MaxValue;
+        }
+        else
+        {
+            SwitchType(0);
+            complexity = Dice.Roll(10);
+        }
     }
 
     private IEnumerator SwitchColorsRandomly()
@@ -27,21 +61,7 @@ public class Agent : MonoBehaviour
     public void SwitchType(int index)
     {        
         agentType = (AgentType)index;
-        mainColor = renderer.material.GetColor("_Color");
-
-        StartCoroutine(SwitchColor(index));
-    }
-
-    private IEnumerator SwitchColor(int colorIndex)
-    {
-        LeanTween.value(gameObject, TweenMaterialColor, mainColor, Spawner.instance.agentColors[colorIndex], 1f);
-        yield return null;
-    }
-
-    public void TweenMaterialColor(Color value)
-    {
-        renderer.material.SetColor("_Color", value);
-        particles.renderer.material.SetColor("_TintColor", value);
+        colorTweener.Tween(Spawner.instance.agentColors[index], 1f, LeanTweenType.linear);
     }
 
     public enum AgentType
@@ -50,5 +70,98 @@ public class Agent : MonoBehaviour
         Security = 1,
         Friendly = 2,
         Corrupted = 3
+    }
+
+    public void Suspend()
+    {
+        velocity.enabled = false;
+    }
+
+    public void Resume()
+    {
+        velocity.enabled = true;
+    }
+
+    public Color hackColor;
+    public Color escapeHackColor;
+    public Color resistHackColor;
+    public Color succeedHackColor;    
+    public Color invisibleColor;
+
+    int hackerSkill = 0;
+
+    public void EscapeHack()
+    {
+        if (beingHacked)
+        {
+            StopCoroutine("ExposeToHack");
+            messageText.text = "hacking_ [cancelled]";
+            messageTweener.Tween(invisibleColor, 1f, LeanTweenType.easeInExpo, escapeHackColor);
+            fizzTweener.Tween(invisibleColor, 0.5f, LeanTweenType.linear);
+        }
+
+        beingHacked = false;
+    }
+
+    public void ResistHack()
+    {
+        if (beingHacked)
+        {
+            messageText.text = "hacking_ [failed]";
+            messageTweener.Tween(invisibleColor, 3f, LeanTweenType.easeInExpo, resistHackColor);
+            fizzTweener.Tween(invisibleColor, 0.5f, LeanTweenType.linear);
+        }
+
+        beingHacked = false;
+    }
+
+    public void SucceedHack()
+    {
+        if (beingHacked)
+        {
+            SwitchType(2);
+            messageText.text = "hacking_ [100%]";
+            messageTweener.Tween(invisibleColor, 3f, LeanTweenType.easeInExpo, succeedHackColor);
+            fizzTweener.Tween(invisibleColor, 0.5f, LeanTweenType.linear);
+        }
+
+        beingHacked = false;
+    }
+
+    public void DefendHack(int hackSkill)
+    {
+        beingHacked = true;
+        hackerSkill = hackSkill;
+        StartCoroutine("ExposeToHack");
+    }
+
+    private bool beingHacked = false;
+
+    private IEnumerator ExposeToHack()
+    {
+        messageText.text = "hacking_";
+        messageTweener.Set(hackColor);
+        fizzTweener.Tween(hackColor, 0.5f, LeanTweenType.linear);
+        float time = 0f;
+
+        while (time < TIME_HACK)
+        {
+            messageText.text = string.Format("hacking_ [{0}%]", ((int)((time / TIME_HACK) * 100f)).ToString());
+            
+            yield return new WaitForEndOfFrame();
+            time += Time.deltaTime;
+        }
+
+        // if agent has been held for enough time, roll the hack dice
+
+        int roll = Dice.Roll(hackerSkill);
+        if (roll <= complexity)
+        {
+            ResistHack();
+        }
+        else
+        {
+            SucceedHack();
+        }
     }
 }

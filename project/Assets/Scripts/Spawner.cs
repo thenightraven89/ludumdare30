@@ -8,6 +8,9 @@ public class Spawner : MonoBehaviour
     // amount of times object will be spawned
     [Range(1, 1000)]
     public int spawnCount;
+    
+    [Range(0f, 1f)]
+    public float securityTypeChanceMax;
 
     // object that will be spawned
     public GameObject sourceObject;
