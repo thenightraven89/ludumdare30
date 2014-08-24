@@ -5,17 +5,31 @@ public class StageManager : MonoBehaviour
 {
     public static StageManager instance;
 
-    //time until stage changes (seconds)
-    public int stageTime;
+    public int TargetMemory
+    {
+        get { return targetMemories[currentStage]; }
+    }
 
-    //required memory to finish stage
-    public int targetMemory;
+    public int StageTime
+    {
+        get { return stageTimes[currentStage]; }
+    }
+
+
+    public int[] stageTimes;
+
+    public int[] targetMemories;
+
+    private int currentStage;
+
+    public GameObject mainScreen;
 
     void Awake()
     {
         instance = this;
 
-        StartCoroutine(AnnounceStage(3));
+        currentStage = 0;
+        StartCoroutine(ExplainStage());
     }
 
     private enum StageState
@@ -35,6 +49,8 @@ public class StageManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
 
+        Spawner.instance.RestoreUnits();
+
         if (winner == null)
         {
             StartCoroutine(LoseStage());
@@ -47,13 +63,66 @@ public class StageManager : MonoBehaviour
         yield return null;
     }
 
+    private bool nothingPressed;
+
+    public VelocityController controller;
+
+    private IEnumerator ExplainStage()
+    {
+        mainScreen.SetActive(true);
+
+        nothingPressed = true;
+
+        while (nothingPressed)
+        {
+            if (Input.GetButton("Hack")) nothingPressed = false;
+
+            yield return new WaitForEndOfFrame();
+        }
+        controller.enabled = true;
+
+        mainScreen.SetActive(false);
+        StartCoroutine(AnnounceStage(3));
+        yield return null;
+    }
+
     private IEnumerator WinStage()
     {
         ElasticCamera.instance.Announce(string.Format("tophacker_ {0}", winner.title));
 
         yield return new WaitForSeconds(3f);
 
-        StartCoroutine(AnnounceStage(3));
+        currentStage++;
+
+        if (currentStage >= stageTimes.Length)
+        {
+            StartCoroutine(FinishGame());
+        }
+        else
+        {
+            StartCoroutine(AnnounceStage(3));
+        }
+
+        yield return null;
+    }
+
+    private IEnumerator FinishGame()
+    {
+        ElasticCamera.instance.Announce("well, it looks like you're done\nthank you for playing!\npress [x] to start anew_");
+        nothingPressed = true;
+        controller.enabled = false;
+
+        ElasticCamera.instance.ClearTime();
+        ElasticCamera.instance.ClearMemory();
+
+        while (nothingPressed)
+        {
+            if (Input.GetButton("Hack")) nothingPressed = false;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        Application.LoadLevel(0);
 
         yield return null;
     }
@@ -72,12 +141,11 @@ public class StageManager : MonoBehaviour
     private IEnumerator AnnounceStage(int cooldown)
     {
         ElasticCamera.instance.SetMemory(0);
-        ElasticCamera.instance.SetTime(stageTime);
-
-
+        ElasticCamera.instance.SetTime(StageTime);
+        
         while (cooldown > -1)
         {
-            ElasticCamera.instance.Announce(string.Format("round starting in_ {0}", cooldown));
+            ElasticCamera.instance.Announce(string.Format("round {0} starting in_ {1}", currentStage, cooldown));
             cooldown--;
             yield return new WaitForSeconds(1f);
         }
@@ -91,7 +159,7 @@ public class StageManager : MonoBehaviour
             hackers[i].ResetMemory();
         }
 
-        StartCoroutine(RunStage(stageTime));
+        StartCoroutine(RunStage(StageTime));
         
         yield return null;
     }
@@ -110,7 +178,7 @@ public class StageManager : MonoBehaviour
 
     internal void AnnounceMemory(Hacking hacker)
     {
-        if (hacker.GetHackedMemory() >= targetMemory && winner == null)
+        if (hacker.GetHackedMemory() >= TargetMemory && winner == null)
         {
             winner = hacker;
         }

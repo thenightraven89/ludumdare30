@@ -10,15 +10,8 @@ public class ElasticCamera : MonoBehaviour
     public TextMesh announcer;
     public TextMesh memory;
     public TextMesh time;
-
-    public TweenMaterialColor announcerTweener;
-
+    
     private int currentMemory;
-
-    [Range(0, 2)]
-    public float tweenTime;
-
-    public LeanTweenType easeType;
 
     private Transform targetTransform;
 
@@ -48,7 +41,7 @@ public class ElasticCamera : MonoBehaviour
     internal void AddMemory(int memoryAmount)
     {        
         currentMemory += memoryAmount;
-        memory.text = string.Format("memory required_ {0}/{1}kB", currentMemory, StageManager.instance.targetMemory);
+        memory.text = string.Format("memory required_ {0}/{1}kB", currentMemory, StageManager.instance.TargetMemory);
         Util.TweenText(memory.gameObject);
     }
 
@@ -61,7 +54,18 @@ public class ElasticCamera : MonoBehaviour
     internal void SetMemory(int memoryAmount)
     {
         currentMemory = memoryAmount;
-        memory.text = string.Format("memory required_ {0}/{1}kB", currentMemory, StageManager.instance.targetMemory);
+        memory.text = string.Format("memory required_ {0}/{1}kB", currentMemory, StageManager.instance.TargetMemory);
         Util.TweenText(memory.gameObject);
+    }
+
+    internal void ClearTime()
+    {
+        time.text = "";
+    }
+
+    internal void ClearMemory()
+    {
+        currentMemory = 0;
+        memory.text = "";
     }
 }

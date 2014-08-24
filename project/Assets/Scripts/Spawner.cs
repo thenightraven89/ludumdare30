@@ -48,4 +48,12 @@ public class Spawner : MonoBehaviour
         Gizmos.DrawLine(new Vector3(spawnArea.xMax, 0, spawnArea.yMax), new Vector3(spawnArea.xMin, 0, spawnArea.yMax));
         Gizmos.DrawLine(new Vector3(spawnArea.xMin, 0, spawnArea.yMax), new Vector3(spawnArea.xMin, 0, spawnArea.yMin));
     }
+
+    internal void RestoreUnits()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).GetComponent<Agent>().SwitchType(0);
+        }
+    }
 }
