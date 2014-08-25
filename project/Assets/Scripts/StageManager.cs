@@ -93,7 +93,8 @@ public class StageManager : MonoBehaviour
     {
         music.PlayOneShot(winSound);
 
-        ElasticCamera.instance.Announce(string.Format("tophacker_ {0}", winner.title));
+        ElasticCamera.instance.Announce("download complete_");
+        //ElasticCamera.instance.Announce(string.Format("tophacker_ {0}", winner.title));
 
         yield return new WaitForSeconds(3f);
 
