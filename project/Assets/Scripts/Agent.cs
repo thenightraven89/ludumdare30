@@ -34,20 +34,7 @@ public class Agent : MonoBehaviour
         messageTweener.Set(invisibleColor);
         fizzTweener.Set(invisibleColor);
 
-        //float securityTypeChance = Random.Range(0f, 1f);
-
-        //if (securityTypeChance < Spawner.instance.securityTypeChanceMax)
-        //{
-        //    SwitchType(1);
-        //    complexity = int.MaxValue;
-        //}
-        //else
-        {
-            SwitchType(0);
-            complexity = Dice.Roll(10);
-        }
-
-        memory = Dice.Roll(32, 32, 32, 32);
+        SwitchType(0);
     }
 
     private IEnumerator SwitchColorsRandomly()
@@ -60,7 +47,9 @@ public class Agent : MonoBehaviour
     }
 
     public void SwitchType(int index)
-    {        
+    {
+        complexity = Dice.Roll(10);
+        memory = Dice.Roll(32, 32, 32, 32);
         agentType = (AgentType)index;
         colorTweener.Tween(Spawner.instance.agentColors[index], 1f, LeanTweenType.linear);
     }
