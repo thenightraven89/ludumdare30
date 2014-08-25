@@ -29,7 +29,7 @@ public class VelocityController : Capability
             currentTransform.Translate(Vector3.forward * verticalVelocity * magnitude * Time.deltaTime);
         }
 
-        if (Mathf.Abs(horizontalVelocity) + Mathf.Abs(verticalVelocity) > VELOCITY_CANCELHACK)
+        if (Mathf.Abs(horizontalVelocity) + Mathf.Abs(verticalVelocity) > VELOCITY_CANCELHACK && hacking)
         {
             hacking.Cancel();
         }

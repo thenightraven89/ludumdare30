@@ -24,6 +24,10 @@ public class StageManager : MonoBehaviour
 
     public GameObject mainScreen;
 
+    public AudioSource music;
+    public AudioClip winSound;
+    public AudioClip loseSound;
+
     void Awake()
     {
         instance = this;
@@ -48,8 +52,6 @@ public class StageManager : MonoBehaviour
             time--;
             yield return new WaitForSeconds(1f);
         }
-
-        Spawner.instance.RestoreUnits();
 
         if (winner == null)
         {
@@ -82,12 +84,15 @@ public class StageManager : MonoBehaviour
         controller.enabled = true;
 
         mainScreen.SetActive(false);
+        music.Play();
         StartCoroutine(AnnounceStage(3));
         yield return null;
     }
 
     private IEnumerator WinStage()
     {
+        music.PlayOneShot(winSound);
+
         ElasticCamera.instance.Announce(string.Format("tophacker_ {0}", winner.title));
 
         yield return new WaitForSeconds(3f);
@@ -112,6 +117,7 @@ public class StageManager : MonoBehaviour
         nothingPressed = true;
         controller.enabled = false;
 
+        music.Stop();
         ElasticCamera.instance.ClearTime();
         ElasticCamera.instance.ClearMemory();
 
@@ -129,6 +135,8 @@ public class StageManager : MonoBehaviour
 
     private IEnumerator LoseStage()
     {
+        music.PlayOneShot(loseSound);
+
         ElasticCamera.instance.Announce("timed out_");
 
         yield return new WaitForSeconds(3f);
@@ -140,6 +148,8 @@ public class StageManager : MonoBehaviour
 
     private IEnumerator AnnounceStage(int cooldown)
     {
+        Spawner.instance.RestoreUnits();
+
         ElasticCamera.instance.SetMemory(0);
         ElasticCamera.instance.SetTime(StageTime);
         

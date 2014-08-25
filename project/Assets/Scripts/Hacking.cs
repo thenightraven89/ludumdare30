@@ -14,15 +14,19 @@ public class Hacking : MonoBehaviour
     public int hackSkill;
 
     public TweenMaterialColor ringColorTweener;
+    public TweenMaterialColor psColorTweener;
 
     void Awake()
     {
         hackableAgents = new List<Agent>();
-    }    
-
+        
+    }
+    
     internal void Activate()
     {
-        transform.localScale = Vector3.one * (sight.radius + 1f);
+        psColorTweener.Tween(new Color(1f, 1f, 1f, 1f), 0.5f, LeanTweenType.linear, new Color(1f, 1f, 1f, 0f));
+
+        transform.localScale = Vector3.one * (sight.radius + 3f);
 
         // keep all hacked agents here
         hackableAgents.Clear();
@@ -31,8 +35,10 @@ public class Hacking : MonoBehaviour
 
         //Debug.Log("hack activated");
         LeanTween.cancel(gameObject);
-        Color currentColor = rings[0].renderer.material.GetColor("_TintColor");
-        ringColorTweener.Tween(new Color(currentColor.r, currentColor.g, currentColor.b, 1f), 0.5f, LeanTweenType.easeOutSine);
+        ringColorTweener.Set(Color.white);
+
+        //Color currentColor = rings[0].renderer.material.GetColor("_TintColor");
+        //ringColorTweener.Tween(new Color(currentColor.r, currentColor.g, currentColor.b, 1f), 0.5f, LeanTweenType.easeOutSine);
 
         //process sight to compute list of visible targets
         sight.Process();
@@ -82,6 +88,11 @@ public class Hacking : MonoBehaviour
             {
                 hackableAgents.RemoveAt(i);
             }
+
+            if (hackableAgents.Count == 0)
+            {
+                ringColorTweener.Set(new Color(1f, 1f, 1f, 0f));
+            }
         }
     }
 
@@ -92,9 +103,13 @@ public class Hacking : MonoBehaviour
             hackableAgents[i].EscapeHack();
         }
 
+        psColorTweener.Tween(new Color(1f, 1f, 1f, 0f), 0.5f, LeanTweenType.linear);
+
         hackableAgents.Clear(); //?????
-        Color currentColor = rings[0].renderer.material.GetColor("_TintColor");
-        ringColorTweener.Tween(new Color(currentColor.r, currentColor.g, currentColor.b, 0f), 0.5f, LeanTweenType.easeInSine);
+        //Color currentColor = rings[0].renderer.material.GetColor("_TintColor");
+        //ringColorTweener.Tween(new Color(currentColor.r, currentColor.g, currentColor.b, 0f), 0.5f, LeanTweenType.easeInSine);
+
+        ringColorTweener.Set(new Color(1f, 1f, 1f, 0f));
     }
 
     internal void AddMemory(int memory)
@@ -103,6 +118,7 @@ public class Hacking : MonoBehaviour
         ElasticCamera.instance.AddMemory(memory);
 
         StageManager.instance.AnnounceMemory(this);
+        audio.PlayOneShot(audio.clip);
     }
 
     internal int GetHackedMemory()
