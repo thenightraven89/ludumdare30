@@ -67,7 +67,7 @@ public class StageManager : MonoBehaviour
 
     private bool nothingPressed;
 
-    public VelocityController controller;
+    public Human controller;
 
     private IEnumerator ExplainStage()
     {
@@ -175,11 +175,11 @@ public class StageManager : MonoBehaviour
         yield return null;
     }
 
-    public Hacking[] hackers;
+    public Human[] hackers;
 
-    Hacking winner = null;
+    private Human winner = null;
 
-    public void AnnounceWinner(Hacking hacker)
+    public void AnnounceWinner(Human hacker)
     {
         if (winner == null)
         {
@@ -187,7 +187,7 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    internal void AnnounceMemory(Hacking hacker)
+    internal void AnnounceMemory(Human hacker)
     {
         if (hacker.GetHackedMemory() >= TargetMemory && winner == null)
         {

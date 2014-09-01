@@ -3,25 +3,27 @@ using System.Collections;
 
 public class Cohesion : Capability
 {
-    public override Vector3 GetDelta()
+    protected override Vector3 GetDelta()
     {
-        base.GetDelta();
-
         // calculate the mass center of the visible objects
         Vector3 massCenter = Vector3.zero;
-        for (int i = 0; i < hits.Count; i++)
+        for (int i = 0; i < agent.hits.Count; i++)
         {
-            massCenter += hits[i].transform.position;
+            Agent otherAgent = agent.hits[i].GetComponent<Agent>();
+
+            if (otherAgent != null)
+            {
+                massCenter += otherAgent.transform.position;
+            }
         }
 
-        if (hits.Count > 0)
+        // average the result
+        if (agent.hits.Count > 0)
         {
-            massCenter /= hits.Count;
+            massCenter /= agent.hits.Count;
         }
 
-        // move towards that mass center
-        Vector3 normalizedMovement = Vector3.Normalize(massCenter - currentTransform.position);
-
-        return normalizedMovement;
+        // return the normalized direction of moving towards the averaged mass point
+        return Vector3.Normalize(massCenter - currentTransform.position);
     }
 }

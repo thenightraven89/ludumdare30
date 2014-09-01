@@ -3,41 +3,21 @@ using System.Collections;
 
 public class Separation : Capability
 {
-    [Range(0, 5)]
-    public float radius;
-
-    private float radius2;
-
-    protected override void Awake()
+    protected override Vector3 GetDelta()
     {
-        base.Awake();
-        radius2 = radius * radius;
-    }
-
-    public override Vector3 GetDelta()
-    {
-        base.GetDelta();
+        Vector3 normalizedMovement = Vector3.zero;
 
         // calculate the average run-away vector
-        Vector3 normalizedMovement = Vector3.zero;
-        for (int i = 0; i < hits.Count; i++)
+        for (int i = 0; i < agent.hits.Count; i++)
         {
-            Vector3 distance = hits[i].transform.position - currentTransform.position;
+            Vector3 distance = agent.hits[i].transform.position - currentTransform.position;
 
-            if (Vector3.SqrMagnitude(distance) < radius2)
+            if (Vector3.SqrMagnitude(distance) < actionRadius2)
             {
                 normalizedMovement -= distance;
             }
         }
 
-        normalizedMovement = Vector3.Normalize(normalizedMovement);
-
-        return normalizedMovement;               
+        return Vector3.Normalize(normalizedMovement);
     }
-
-    //void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.yellow;
-    //    Gizmos.DrawWireSphere(transform.position, radius);
-    //}
 }

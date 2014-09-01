@@ -3,42 +3,32 @@ using System.Collections;
 
 public class Alignment : Capability
 {
-    [Range(0, 5)]
-    public float radius;
-
-    private float radius2;
-
-    protected override void Awake()
+    protected override Vector3 GetDelta()
     {
-        base.Awake();
-        radius2 = radius * radius;
-    }
-
-    public override Vector3 GetDelta()
-    {
-        base.GetDelta();
-
         Vector3 collectiveVelocity = Vector3.zero;
 
-        for (int i = 0; i < hits.Count; i++)
+        for (int i = 0; i < agent.hits.Count; i++)
         {
-            Vector3 distance = hits[i].transform.position - currentTransform.position;
+            Vector3 distance = agent.hits[i].transform.position - currentTransform.position;
 
-            if (distance.sqrMagnitude < radius2)
+            if (distance.sqrMagnitude < actionRadius2)
             {
-                Velocity otherVelocity = hits[i].GetComponent<Velocity>();
-                if (otherVelocity != null)
+                Agent otherAgent = agent.hits[i].GetComponent<Agent>();
+
+                // if what we see is an agent
+                if (otherAgent != null)
                 {
-                    collectiveVelocity += otherVelocity.CurrentVelocity;
+                    // have its velocity influence this one's
+                    collectiveVelocity += otherAgent.CurrentVelocity;
                 }
             }
         }
 
-        if (hits.Count > 0)
+        if (agent.hits.Count > 0)
         {
-            collectiveVelocity /= hits.Count;
+            collectiveVelocity /= agent.hits.Count;
         }
 
-        return collectiveVelocity - GetComponent<Velocity>().CurrentVelocity;
+        return collectiveVelocity - agent.CurrentVelocity;
     }
 }
