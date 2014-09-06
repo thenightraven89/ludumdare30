@@ -189,7 +189,10 @@ public class Agent : Entity
             velocity = new Vector3(0f, 0f, velocity.z);
         }
 
-        // finally, transalte agent with computed velocity
-        currentTransform.Translate(velocity * Time.deltaTime);
+        if (!beingHacked)
+        {
+            // finally, transalte agent with computed velocity
+            currentTransform.Translate(velocity * Time.deltaTime);
+        }
     }
 }

@@ -50,7 +50,7 @@ public class Human : Entity
 
             for (int j = 0; j < hits.Count; j++)
             {
-                if (hackableAgents[i] == hits[j].GetComponent<Agent>())
+                if (hackableAgents[i].Equals(hits[j].GetComponent<Agent>()))
                 {
                     isPresent = true;
                 }
@@ -58,6 +58,7 @@ public class Human : Entity
 
             if (!isPresent)
             {
+                Debug.Log("escaping due to fail processhacking");
                 hackableAgents[i].EscapeHack();
                 hackableAgents.RemoveAt(i);
             }
@@ -88,7 +89,7 @@ public class Human : Entity
             currentTransform.Translate(Vector3.forward * verticalVelocity * Time.deltaTime);
         }
 
-        if (Mathf.Abs(horizontalVelocity) + Mathf.Abs(verticalVelocity) > VELOCITY_CANCELHACK && hackableAgents.Count > 0)
+        if (Mathf.Abs(horizontalVelocity) + Mathf.Abs(verticalVelocity) > VELOCITY_CANCELHACK * maxVelocity && hackableAgents.Count > 0)
         {
             Cancel();
         }
