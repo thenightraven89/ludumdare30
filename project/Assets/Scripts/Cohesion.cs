@@ -24,6 +24,6 @@ public class Cohesion : Capability
         }
 
         // return the normalized direction of moving towards the averaged mass point
-        return Vector3.Normalize(massCenter - currentTransform.position);
+        return massCenter - currentTransform.position;
     }
 }

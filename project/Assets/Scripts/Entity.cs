@@ -17,6 +17,10 @@ public class Entity : MonoBehaviour
     [Range(0, 5)]
     public float sightRadius;
 
+    [Tooltip("cap velocity to this value")]
+    [Range(1, 10)]
+    public float maxVelocity;
+
     // stored list of all hit colliders in specified sight radius
     [HideInInspector]
     public List<Collider> hits;

@@ -76,8 +76,8 @@ public class Human : Entity
 
     private void ProcessInput()
     {
-        float horizontalVelocity = Input.GetAxis("Horizontal");
-        float verticalVelocity = Input.GetAxis("Vertical");
+        float horizontalVelocity = Input.GetAxis("Horizontal") * maxVelocity;
+        float verticalVelocity = Input.GetAxis("Vertical") * maxVelocity;
 
         if (Mathf.Abs(horizontalVelocity) > Mathf.Abs(verticalVelocity))
         {

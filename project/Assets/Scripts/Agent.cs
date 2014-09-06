@@ -9,10 +9,6 @@ public class Agent : Entity
 
     [Tooltip("tween hacking message color")]
     public TweenMaterialColor messageTweener;
-    
-    [Tooltip("cap velocity to this value")]
-    [Range(1, 10)]
-    public float maxVelocity;
 
     // the complexity level of the agent - how difficult it is to get hacked
     private int complexity;
