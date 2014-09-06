@@ -38,7 +38,7 @@ public class Entity : MonoBehaviour
     protected int memory;
 
     // stored list of this agent's capabilities
-    protected List<Capability> capabilities;
+    protected List<SteeringBehaviour> capabilities;
 
     // area on which agent is able to move
     protected Rect movementArea;
@@ -51,7 +51,7 @@ public class Entity : MonoBehaviour
         currentTransform = transform;
 
         // fetch list of this agent's capabilities
-        capabilities = new List<Capability>(GetComponents<Capability>());
+        capabilities = new List<SteeringBehaviour>(GetComponents<SteeringBehaviour>());
 
         // set movement area to initial spawning area
         movementArea = Spawner.instance.spawnArea;

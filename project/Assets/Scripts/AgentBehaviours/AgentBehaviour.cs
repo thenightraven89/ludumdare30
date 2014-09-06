@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
-public class Capability : MonoBehaviour
+public class AgentBehaviour : MonoBehaviour
 {
     // reference to the capability's current transform
     protected Transform currentTransform;
@@ -25,16 +24,5 @@ public class Capability : MonoBehaviour
         currentTransform = transform;
         agent = GetComponent<Agent>();
         actionRadius2 = actionRadius * actionRadius;
-    }
-
-    protected virtual Vector3 GetDelta()
-    {
-        return Vector3.zero;
-    }
-
-    // fetch the velocity modifier that will be used by the agent
-    public Vector3 Delta
-    {
-        get { return GetDelta() * magnitude; }
     }
 }

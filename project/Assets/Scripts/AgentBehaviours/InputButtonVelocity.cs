@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Wander : Capability
+public class InputButtonVelocity : SteeringBehaviour
 {
     protected override void Awake()
     {

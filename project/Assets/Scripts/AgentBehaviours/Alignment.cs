@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Alignment : Capability
+public class Alignment : SteeringBehaviour
 {
     protected override Vector3 GetDelta()
     {

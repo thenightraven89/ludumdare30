@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Separation : Capability
+public class Separation : SteeringBehaviour
 {
     protected override Vector3 GetDelta()
     {

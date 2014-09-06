@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Cohesion : Capability
+public class Cohesion : SteeringBehaviour
 {
     protected override Vector3 GetDelta()
     {
