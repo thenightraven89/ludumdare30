@@ -41,21 +41,26 @@ public class StageManager : MonoBehaviour
         Announcing,
         Starting,
         Running,
-        TimedOut
+        TimedOut,
+        Intercepted
     }
 
     private IEnumerator RunStage(int time)
     {
-        while (time > -1 && winner == null)
+        while (time > -1 && winner == null && !intercepted)
         {
             ElasticCamera.instance.SetTime(time);
             time--;
             yield return new WaitForSeconds(1f);
         }
 
-        if (winner == null)
+        if (intercepted)
         {
-            StartCoroutine(LoseStage());
+            StartCoroutine(LoseStageIntercept());
+        }
+        else if (winner == null)
+        {
+            StartCoroutine(LoseStageTimeOut());
         }
         else
         {
@@ -134,11 +139,24 @@ public class StageManager : MonoBehaviour
         yield return null;
     }
 
-    private IEnumerator LoseStage()
+    private IEnumerator LoseStageTimeOut()
     {
         music.PlayOneShot(loseSound);
 
         ElasticCamera.instance.Announce("timed out_");
+
+        yield return new WaitForSeconds(3f);
+
+        StartCoroutine(AnnounceStage(3));
+
+        yield return null;
+    }
+
+    private IEnumerator LoseStageIntercept()
+    {
+        music.PlayOneShot(loseSound);
+
+        ElasticCamera.instance.Announce("intercepted_");
 
         yield return new WaitForSeconds(3f);
 
@@ -164,6 +182,7 @@ public class StageManager : MonoBehaviour
         ElasticCamera.instance.Announce("");
 
         winner = null;
+        intercepted = false;
         
         for (int i = 0; i < hackers.Length; i++)
         {
@@ -178,6 +197,7 @@ public class StageManager : MonoBehaviour
     public Human[] hackers;
 
     private Human winner = null;
+    private bool intercepted = false;
 
     public void AnnounceWinner(Human hacker)
     {
@@ -185,6 +205,11 @@ public class StageManager : MonoBehaviour
         {
             winner = hacker;
         }
+    }
+
+    public void AnnounceIntercept()
+    {
+        intercepted = true;
     }
 
     internal void AnnounceMemory(Human hacker)

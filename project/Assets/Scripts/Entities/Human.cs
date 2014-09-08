@@ -115,6 +115,9 @@ public class Human : Entity
 
         LeanTween.cancel(gameObject);
         ringColorTweener.Set(Color.white);
+
+        Debug.Log("clearing");
+        Support.informedAgents = new List<int>();
              
         for (int i = 0; i < hits.Count; i++)
         {

@@ -53,7 +53,25 @@ public class Spawner : MonoBehaviour
     {
         for (int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).GetComponent<Agent>().SwitchType(0);
+            Agent agent = transform.GetChild(i).GetComponent<Agent>();
+
+
+            float securityTypeChance = Random.Range(0f, 1f);
+
+            if (securityTypeChance < securityTypeChanceMax)
+            {
+                agent.SwitchType((int)Agent.EntityTypes.Security);
+                agent.GetComponent<Cohesion>().magnitude = 0f;
+            }
+            else
+            {
+                // set agent as citizen
+                agent.SwitchType((int)Agent.EntityTypes.Citizen);
+                agent.GetComponent<Cohesion>().magnitude = sourceObject.GetComponent<Cohesion>().magnitude;
+            }
+
+            // give agent random direction at first
+            agent.SetRandomVelocity();
         }
     }
 }
